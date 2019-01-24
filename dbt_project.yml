@@ -16,7 +16,7 @@ on-run-end:
 models:
     post-hook: "grant select on {{this}} to role REPORTER"
     
-target-path: "target"  # directory which will store compiled SQL files
-clean-targets:         # directories to be removed by `dbt clean`
+target-path: "target"  
+clean-targets:
     - "target"
     - "dbt_modules"
