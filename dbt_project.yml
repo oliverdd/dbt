@@ -8,7 +8,15 @@ test-paths: ["tests"]
 data-paths: ["data"]
 macro-paths: ["macros"]
 
-target-path: "target"  # directory which will store compiled SQL files
-clean-targets:         # directories to be removed by `dbt clean`
+
+on-run-end: 
+    - "grant usage on schema {{target.schema}} to role REPORTER"
+    - "grant usage on schema {{target.schema}} to role LOADER"
+    
+models:
+    post-hook: "grant select on {{this}} to role REPORTER"
+    
+target-path: "target"  
+clean-targets:
     - "target"
     - "dbt_modules"
