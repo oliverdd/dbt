@@ -20,7 +20,7 @@ renamed as (
         token,
         
         -- customer attributes
-        email,
+        nullif(lower(email),'') as email,
         contact_email,
         buyer_accepts_marketing,
         confirmed,

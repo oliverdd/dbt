@@ -11,12 +11,7 @@ flattened_items as (
         f.value:id::varchar as order_item_id,
         id as order_id,
         order_number,
-        coalesce(
-            nullif(lower(email),''), 
-            case when note ilike '%email%' 
-                then split_part(split_part(lower(note), ': ', 2), 'first name', 1) 
-                else null 
-            end) as email,
+        nullif(lower(email),'') as email,
         financial_status,
         f.value:product_id::varchar as product_id,
         f.value:sku::varchar as product_sku,
