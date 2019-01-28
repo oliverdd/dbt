@@ -29,9 +29,9 @@ models:
                 - unique
                 - not_null
                 
-    - name: stg_shopify_refunds
+    - name: stg_shopify_refund_items
       columns:
-          - name: refund_id
+          - name: order_item_id
             tests:
                 - unique
                 - not_null
