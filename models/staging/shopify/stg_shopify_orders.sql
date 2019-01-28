@@ -20,12 +20,7 @@ renamed as (
         token,
         
         -- customer attributes
-        coalesce(
-            nullif(lower(email),''), 
-            case when note ilike '%email%' 
-                then split_part(split_part(lower(note), ': ', 2), 'first name', 1) 
-                else null 
-            end) as email, --this may not be needed they did some mapping
+        email,
         contact_email,
         buyer_accepts_marketing,
         confirmed,
