@@ -9,12 +9,18 @@ data-paths: ["data"]
 macro-paths: ["macros"]
 
 
+on-run-start:
+    - "{{resume_warehouse(var('resume_warehouse', false), var('warehouse_name'))}}"    
+
 on-run-end: 
+    - "{{suspend_warehouse(var('suspend_warehouse', false), var('warehouse_name'))}}"
     - "grant usage on schema {{target.schema}} to role REPORTER"
     - "grant usage on schema {{target.schema}} to role LOADER"
     
 models:
     post-hook: "grant select on {{this}} to role REPORTER"
+    vars:
+        warehouse_name: 'LOADING'
     
 target-path: "target"  
 clean-targets:
