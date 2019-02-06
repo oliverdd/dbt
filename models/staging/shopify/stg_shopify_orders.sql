@@ -29,7 +29,6 @@ renamed as (
         test,
         
         -- order attributes
-        line_items,
         location_id,
         number as "number",
         order_number,
