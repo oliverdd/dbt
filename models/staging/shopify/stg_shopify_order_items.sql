@@ -9,10 +9,12 @@ flattened_items as (
     select
     
         f.value:id::varchar as order_item_id,
+        tags,
         id as order_id,
         order_number,
         nullif(lower(email),'') as email,
         financial_status,
+        created_at,
         f.value:product_id::varchar as product_id,
         f.value:sku::varchar as product_sku,
         f.value:title::varchar as product_title,

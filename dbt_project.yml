@@ -21,6 +21,13 @@ models:
     post-hook: "grant select on {{this}} to role REPORTER"
     vars:
         warehouse_name: 'LOADING'
+        addresses_table: stg_shopify_customers
+        customers_table: stg_shopify_customers
+        order_items_table: stg_shopify_order_items
+        orders_table: stg_shopify_orders
+        products_table: stg_shopify_products
+        customer_aggregate_on: customer_id
+        customer_join_on: customer_id        
     
 target-path: "target"  
 clean-targets:

@@ -1,0 +1,3 @@
+packages:
+  - package: fishtown-analytics/fishtown_analytics_ecommerce
+    version: 0.1.9
