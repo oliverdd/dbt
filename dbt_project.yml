@@ -27,10 +27,10 @@ models:
     vars:
         warehouse_name: 'LOADING'
         addresses_table: "not using this"
-        customers_table: stg_shopify_customers
-        order_items_table: stg_shopify_order_items
-        orders_table: stg_shopify_orders
-        products_table: stg_shopify_products
+        customers_table: "{{ ref('stg_shopify_customers') }}"
+        order_items_table: "{{ ref('stg_shopify_order_items') }}"
+        orders_table: "{{ ref('stg_shopify_orders') }}"
+        products_table: "{{ ref('stg_shopify_products') }}"
         customer_aggregate_on: customer_id
         customer_join_on: customer_id
                
