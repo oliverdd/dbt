@@ -19,9 +19,23 @@ on-run-end:
     
 models:
     post-hook: "grant select on {{this}} to role REPORTER"
+    fishtown_analytics_ecommerce:
+      transform:
+        addresses:
+          enabled: false
+
     vars:
         warehouse_name: 'LOADING'
-    
+        addresses_table: "not using this"
+        customers_table: stg_shopify_customers
+        order_items_table: stg_shopify_order_items
+        orders_table: stg_shopify_orders
+        products_table: stg_shopify_products
+        customer_aggregate_on: customer_id
+        customer_join_on: customer_id
+               
+    perfect_keto:
+        
 target-path: "target"  
 clean-targets:
     - "target"
