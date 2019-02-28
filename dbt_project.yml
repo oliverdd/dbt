@@ -33,7 +33,21 @@ models:
         products_table: "{{ ref('stg_shopify_products') }}"
         customer_aggregate_on: customer_id
         customer_join_on: customer_id
-               
+        
+    snowplow:
+        vars:
+            snowplow:timezone: 'America/New_York'
+            snowplow:page_ping_frequency: 10
+            snowplow:events: "{{ ref('stg_events') }}"
+            snowplow:context:web_page: "{{ ref('stg_web_page_context')}}"
+            snowplow:context:performance_timing: false
+            snowplow:context:useragent: false
+    base:
+      optional:
+        enabled: false
+    page_views:
+      optional:
+        enabled: false               
     perfect_keto:
         
 target-path: "target"  
