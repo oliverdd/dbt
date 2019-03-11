@@ -1,18 +1,21 @@
-with raw_events as (
-    select * from raw.snowplow.events
+with 
+
+orders as (    
+    select * from {{ ref('stg_shopify_orders') }}
 ),
 
-add_row_number as (
+add_users as (
     select
-        raw_events.*,
-        row_number() over (partition by event_id 
-            order by collector_tstamp desc) as most_recent_event
-    from raw_events
-),
+    
+        {{ dbt_utils.star(from=ref('events_base'), except=["USER_ID", "APP_ID"]) }},
+        
+        events.app_id,
+        coalesce(orders.email, events.user_id) as user_id
 
-filter_duplicates as (
-    select * from add_row_number
-    where most_recent_event = 1
+    from {{ref('events_base')}} as events
+    left join orders
+        on events.user_id = orders.cart_token
+
 )
 
-select * from filter_duplicates
+select * from add_users

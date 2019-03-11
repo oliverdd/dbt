@@ -25,7 +25,6 @@ models:
           enabled: false
 
     vars:
-        warehouse_name: 'LOADING'
         addresses_table: "not using this"
         customers_table: "{{ ref('stg_shopify_customers') }}"
         order_items_table: "{{ ref('stg_shopify_order_items') }}"
@@ -42,13 +41,43 @@ models:
             snowplow:context:web_page: "{{ ref('stg_web_page_context')}}"
             snowplow:context:performance_timing: false
             snowplow:context:useragent: false
-    base:
-      optional:
-        enabled: false
-    page_views:
-      optional:
-        enabled: false               
+            
+        base:
+            optional:
+                enabled: false
+        page_views:
+            optional:
+                enabled: false
+        identification:
+            snowplow_id_map:
+                enabled: false
+
+        
+    adwords:
+        stitch:
+          base:
+            adwords_url_performance:
+              enabled: true 
+        vars:
+          criteria_performance_report: "raw.perfect_keto_adwords.criteria_performance_report"
+          click_performance_report: "raw.perfect_keto_adwords.click_performance_report"
+          final_url_performance_report: "raw.perfect_keto_adwords.final_url_report"
+          ads_table: "raw.perfect_keto_adwords.ads"
+          ad_groups_table: "raw.perfect_keto_adwords.ad_groups"
+          accounts_table: "raw.perfect_keto_adwords.accounts"
+          campaigns_table: "raw.perfect_keto_adwords.campaigns"
+        
+    facebook_ads:
+          vars:
+            ads_table: "raw.perfect_keto_facebook_ads.ads"
+            ad_creatives_table: "raw.perfect_keto_facebook_ads.adcreative"
+            adsets_table: "raw.perfect_keto_facebook_ads.adsets"
+            campaigns_table: "raw.perfect_keto_facebook_ads.campaigns"
+            ads_insights_table: "raw.perfect_keto_facebook_ads.ads_insights"  
+               
     perfect_keto:
+        vars:
+            warehouse_name: 'LOADING'   
         
 target-path: "target"  
 clean-targets:

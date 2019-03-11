@@ -1,4 +1,4 @@
-with source as (
+with staged_events as (
     select * from  {{ ref('stg_events') }}
 ),
 
@@ -8,7 +8,7 @@ context as (
         event_id as root_id, 
         c.value:data:id::string as id,
         collector_tstamp
-    from source,
+    from staged_events,
     lateral flatten (input => contexts:data) c
 )
 
