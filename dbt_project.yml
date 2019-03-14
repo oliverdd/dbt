@@ -54,10 +54,13 @@ models:
 
         
     adwords:
-        stitch:
+        stitch:                
           base:
             adwords_url_performance:
-              enabled: true 
+              enabled: true
+          adapters:
+            adwords_ad_performance_adapter:
+                enabled: false
         vars:
           criteria_performance_report: "raw.perfect_keto_adwords.criteria_performance_report"
           click_performance_report: "raw.perfect_keto_adwords.click_performance_report"
@@ -74,6 +77,9 @@ models:
             adsets_table: "raw.perfect_keto_facebook_ads.adsets"
             campaigns_table: "raw.perfect_keto_facebook_ads.campaigns"
             ads_insights_table: "raw.perfect_keto_facebook_ads.ads_insights"  
+          transform:
+            fb_ad_performance_adapter:
+                enabled: false
                
     perfect_keto:
         vars:
