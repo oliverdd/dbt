@@ -1,3 +1,9 @@
+{{
+    config(
+        materialized='table'
+    )
+}}
+
 with sessions as (
 
     select
@@ -43,7 +49,6 @@ sessions_joined as (
     left join sessions
         on orders.email = sessions.inferred_user_id
     where sessions.session_start <= orders.created_at
-       and sessions.session_start > orders.previous_completed_order_date
 
 ),
 

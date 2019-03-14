@@ -1,0 +1,11 @@
+
+version: 2
+
+models:
+    - name: order_attribution
+      
+      columns:
+          - name: attribution_id
+            tests:
+                - not_null
+                - unique
