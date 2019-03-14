@@ -78,22 +78,30 @@ join_adwords as (
 add_ad_performance as (
     
     select 
-        
+
         *,
-        
+
         case
-            when marketing_medium is not null or
-                marketing_source is not null or
-                marketing_campaign is not null or
-                marketing_term is not null or
-                marketing_content is not null or
-                criteria_id is not null or
-                ad_group_id is not null 
-        then
-             {{dbt_utils.surrogate_key(
-                'session_day','marketing_medium', 'marketing_source', 'marketing_campaign',
-                 'marketing_term','marketing_content','criteria_id','ad_group_id'
-            )}}
+            when attribution_source like '%facebook%' 
+                and attribution_channel like '%paid%'
+                then 
+                    {{dbt_utils.surrogate_key(
+                        'session_day',
+                        'marketing_content',
+                        'marketing_term',
+                        'marketing_campaign'
+                    )}}
+                    
+            when attribution_source like '%google%' 
+                and criteria_id is not null
+                then 
+                    {{dbt_utils.surrogate_key(
+                        'session_day',
+                        'criteria_id',
+                        'ad_group_id',
+                        'attribution_campaign'
+                    )}}
+            else null
         end as ad_performance_id
         
     from join_adwords
