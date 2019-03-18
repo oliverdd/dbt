@@ -1,4 +1,4 @@
-with source as (
+with raw_orders as (
 
     select * from raw.perfect_keto_shopify.orders
 
@@ -17,6 +17,7 @@ renamed as (
         customer:id as customer_id,
         customer:last_order_id as last_order_id,
         customer:last_order_name::varchar as last_order_name,
+        cart_token,
         token,
         
         -- customer attributes
@@ -91,7 +92,7 @@ renamed as (
         landing_site,
         landing_site_ref
     
-    from source
+    from raw_orders
 
 )
 
