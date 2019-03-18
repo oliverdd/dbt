@@ -23,57 +23,6 @@ models:
     perfect_keto:
         vars:
             warehouse_name: 'LOADING'   
-    
-    fishtown_analytics_ecommerce:
-      transform:
-        addresses:
-          enabled: false
-
-    vars:
-        addresses_table: "not using this"
-        customers_table: "{{ ref('stg_shopify_customers') }}"
-        order_items_table: "{{ ref('stg_shopify_order_items') }}"
-        orders_table: "{{ ref('stg_shopify_orders') }}"
-        products_table: "{{ ref('stg_shopify_products') }}"
-        customer_aggregate_on: customer_id
-        customer_join_on: customer_id
-        
-    snowplow:
-        vars:
-            snowplow:timezone: 'America/New_York'
-            snowplow:page_ping_frequency: 10
-            snowplow:events: "{{ ref('stg_events') }}"
-            snowplow:context:web_page: "{{ ref('stg_web_page_context')}}"
-            snowplow:context:performance_timing: false
-            snowplow:context:useragent: false
-            
-        base:
-            optional:
-                enabled: false
-        page_views:
-            optional:
-                enabled: false
-        identification:
-            snowplow_id_map:
-                enabled: false
-
-        
-    adwords:
-        stitch:                
-          base:
-            adwords_url_performance:
-              enabled: true
-          adapters:
-            adwords_ad_performance_adapter:
-                enabled: false
-        vars:
-          criteria_performance_report: "raw.perfect_keto_adwords.criteria_performance_report"
-          click_performance_report: "raw.perfect_keto_adwords.click_performance_report"
-          final_url_performance_report: "raw.perfect_keto_adwords.final_url_report"
-          ads_table: "raw.perfect_keto_adwords.ads"
-          ad_groups_table: "raw.perfect_keto_adwords.ad_groups"
-          accounts_table: "raw.perfect_keto_adwords.accounts"
-          campaigns_table: "raw.perfect_keto_adwords.campaigns"
         
     facebook_ads:
           vars:
@@ -85,7 +34,58 @@ models:
           transform:
             fb_ad_performance_adapter:
                 enabled: false
-               
+                
+    fishtown_analytics_ecommerce:
+        transform:
+            addresses:
+                enabled: false
+
+        vars:
+            addresses_table: "not using this"
+            customers_table: "{{ ref('stg_shopify_customers') }}"
+            order_items_table: "{{ ref('stg_shopify_order_items') }}"
+            orders_table: "{{ ref('stg_shopify_orders') }}"
+            products_table: "{{ ref('stg_shopify_products') }}"
+            customer_aggregate_on: customer_id
+            customer_join_on: customer_id
+
+    snowplow:
+        vars:
+            snowplow:timezone: 'America/New_York'
+            snowplow:page_ping_frequency: 10
+            snowplow:events: "{{ ref('stg_events') }}"
+            snowplow:context:web_page: "{{ ref('stg_web_page_context')}}"
+            snowplow:context:performance_timing: false
+            snowplow:context:useragent: false
+
+        base:
+            optional:
+                enabled: false
+                page_views:
+                    optional:
+                        enabled: false
+        identification:
+            snowplow_id_map:
+                enabled: false
+
+    adwords:
+        stitch:                
+            base:
+                adwords_url_performance:
+                    enabled: true
+            adapters:
+                adwords_ad_performance_adapter:
+                    enabled: false
+        vars:
+            criteria_performance_report: "raw.perfect_keto_adwords.criteria_performance_report"
+            click_performance_report: "raw.perfect_keto_adwords.click_performance_report"
+            final_url_performance_report: "raw.perfect_keto_adwords.final_url_report"
+            ads_table: "raw.perfect_keto_adwords.ads"
+            ad_groups_table: "raw.perfect_keto_adwords.ad_groups"
+            accounts_table: "raw.perfect_keto_adwords.accounts"
+            campaigns_table: "raw.perfect_keto_adwords.campaigns"
+            adapter_value: criteria
+                       
 
         
 target-path: "target"  
