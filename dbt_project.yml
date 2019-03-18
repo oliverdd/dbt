@@ -19,6 +19,11 @@ on-run-end:
     
 models:
     post-hook: "grant select on {{this}} to role REPORTER"
+    
+    perfect_keto:
+        vars:
+            warehouse_name: 'LOADING'   
+    
     fishtown_analytics_ecommerce:
       transform:
         addresses:
@@ -81,9 +86,7 @@ models:
             fb_ad_performance_adapter:
                 enabled: false
                
-    perfect_keto:
-        vars:
-            warehouse_name: 'LOADING'   
+
         
 target-path: "target"  
 clean-targets:

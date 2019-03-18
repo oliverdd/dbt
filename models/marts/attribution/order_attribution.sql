@@ -18,7 +18,7 @@ with sessions as (
         attribution_source,
         attribution_campaign
 
-    from {{ref('snowplow_sessions_final')}}
+    from {{ref('fct_snowplow_sessions')}}
 
 ),
 
@@ -33,7 +33,9 @@ sessions_joined as (
 
     select
 
-        orders.*,
+        orders.order_id,
+        orders.total_price,
+        orders.created_at,
         sessions.session_id,
         sessions.session_start,
         sessions.session_index,

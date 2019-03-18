@@ -8,8 +8,6 @@ fb_keyword_performance_agg as (
 
     select
         date_day as campaign_date,
-        url_host,
-        url_path,
         utm_source,
         utm_medium,
         utm_campaign,
@@ -25,7 +23,7 @@ fb_keyword_performance_agg as (
         
 
     from fb_keyword_performance
-    {{dbt_utils.group_by(12)}}
+    {{dbt_utils.group_by(10)}}
 
 )
 
