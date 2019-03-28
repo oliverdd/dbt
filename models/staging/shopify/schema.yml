@@ -35,3 +35,10 @@ models:
             tests:
                 - unique
                 - not_null
+                
+    - name: stg_shopify_transactions
+      columns:
+          - name: id
+            tests:
+                - unique
+                - not_null

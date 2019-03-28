@@ -24,7 +24,7 @@ with sessions as (
 
 orders as (
 
-    select * from {{ ref('orders_xf') }}
+    select * from {{ ref('fct_orders') }}
     where customer_id is not null
 
 ),

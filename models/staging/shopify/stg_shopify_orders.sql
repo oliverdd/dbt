@@ -34,6 +34,7 @@ renamed as (
         number as "number",
         order_number,
         currency,
+        discount_codes[0]:code::string as discount_code,
         presentment_currency,
         financial_status,
         case when financial_status in ('paid', 'partially_paid', 'partially_refunded')
@@ -45,6 +46,7 @@ renamed as (
         processing_method,
         total_tip_received,
         total_weight,
+        shipping_lines[0]:title::string as shipping_method,
         total_discounts,
         subtotal_price,
         total_line_items_price,
@@ -76,6 +78,7 @@ renamed as (
         
         -- dates
         created_at,
+        to_timestamp(fulfillments[0]:created_at::string, 'yyyy-mm-ddThh24:mi:ssZ') as fulfilled_at,
         processed_at,
         closed_at,
         updated_at,
