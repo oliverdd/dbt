@@ -10,26 +10,27 @@ orders as (
 ),
 
 transactions as (
-    select 
-        *,
-        row_number() over (partition by order_id order by 
-            created_at desc) as most_recent_transaction
+    select distinct
+        
+        order_id,
+         
+        last_value(created_at) over (partition by order_id order by 
+            created_at) as paid_at,
+            
+        last_value(gateway) over (partition by order_id order by 
+            created_at) as payment_method
+            
     from {{ ref('stg_shopify_transactions') }}
-),
-
-recent_transactions as (
-    select * from transactions
-    where most_recent_transaction = 1
 ),
 
 joined as (
     
     select 
         orders.*,
-        recent_transactions.created_at as paid_at,
-        recent_transactions.gateway as payment_method
+        transactions.paid_at,
+        transactions.payment_method
     from orders
-    left join recent_transactions
+    left join transactions
         using (order_id)
 )
 
