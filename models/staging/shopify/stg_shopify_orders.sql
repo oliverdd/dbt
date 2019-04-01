@@ -77,12 +77,15 @@ renamed as (
         nullif(lower(billing_address:zip::varchar), '') as billing_zip_code,
         
         -- dates
-        created_at,
-        to_timestamp(fulfillments[0]:created_at::string, 'yyyy-mm-ddThh24:mi:ssZ') as fulfilled_at,
-        processed_at,
-        closed_at,
-        updated_at,
-        cancelled_at,
+        convert_timezone('UTC','America/Los_Angeles',created_at::timestamp_ntz) as created_at,
+        convert_timezone('UTC','America/Los_Angeles',
+            to_timestamp(fulfillments[0]:created_at::string,
+                 'yyyy-mm-ddThh24:mi:ssZ')::timestamp_ntz) as fulfilled_at,
+        convert_timezone('UTC','America/Los_Angeles',processed_at::timestamp_ntz) as processed_at,
+        convert_timezone('UTC','America/Los_Angeles',closed_at::timestamp_ntz) as closed_at,
+        convert_timezone('UTC','America/Los_Angeles',updated_at::timestamp_ntz) as updated_at,
+        convert_timezone('UTC','America/Los_Angeles',cancelled_at::timestamp_ntz) as cancelled_at,
+
         cancel_reason,
         
         -- nested
