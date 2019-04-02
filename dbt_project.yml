@@ -51,7 +51,7 @@ models:
 
     snowplow:
         vars:
-            snowplow:timezone: 'America/New_York'
+            snowplow:timezone: 'America/Los_Angeles'
             snowplow:page_ping_frequency: 10
             snowplow:events: "{{ ref('stg_events') }}"
             snowplow:context:web_page: "{{ ref('stg_web_page_context')}}"
