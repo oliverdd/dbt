@@ -26,11 +26,13 @@ models:
         
     facebook_ads:
           vars:
+            etl: "stitch"
             ads_table: "raw.perfect_keto_facebook_ads.ads"
             ad_creatives_table: "raw.perfect_keto_facebook_ads.adcreative"
             adsets_table: "raw.perfect_keto_facebook_ads.adsets"
             campaigns_table: "raw.perfect_keto_facebook_ads.campaigns"
-            ads_insights_table: "raw.perfect_keto_facebook_ads.ads_insights"  
+            ads_insights_table: "raw.perfect_keto_facebook_ads.ads_insights"
+            url_tag_table: "disabled"
           transform:
             fb_ad_performance_adapter:
                 enabled: false
@@ -61,9 +63,9 @@ models:
         base:
             optional:
                 enabled: false
-                page_views:
-                    optional:
-                        enabled: false
+        page_views:
+            optional:
+                enabled: false
         identification:
             snowplow_id_map:
                 enabled: false
