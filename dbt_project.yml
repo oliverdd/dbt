@@ -27,7 +27,7 @@ models:
     facebook_ads:
           vars:
             etl: "stitch"
-            ads_table: "raw.perfect_keto_facebook_ads.ads"
+            ads_table: "{{ref('stg_facebook_ads')}}"
             ad_creatives_table: "raw.perfect_keto_facebook_ads.adcreative"
             adsets_table: "raw.perfect_keto_facebook_ads.adsets"
             campaigns_table: "raw.perfect_keto_facebook_ads.campaigns"
