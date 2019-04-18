@@ -21,12 +21,7 @@ sessions_joined as (
         sessions.*,
         date_trunc('day', cast(session_start as date)) as session_day,
         shopify_customers.customer_id,
-        shopify_customers.customer_created_at,
-        shopify_customers.customer_age_days,
-        shopify_customers.customer_type,
-        shopify_customers.lifetime_revenue
-
---start to categorize source, medium, and campaign from snowplow fields
+        shopify_customers.first_order_date
 
     from sessions
     left join shopify_customers 
@@ -86,7 +81,6 @@ all_sessions as (
     
         sessions.*,
         attribution_calculations.customer_id,
-        attribution_calculations.lifetime_revenue,
         attribution_calculations.forty_twenty_forty_attribution_points,
         attribution_calculations.first_click_attribution_points,
         attribution_calculations.last_click_attribution_points,
