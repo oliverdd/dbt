@@ -1,3 +1,10 @@
+{{
+    config(
+        materialized='table'
+    )
+}}
+
+
 with sessions as (
     
     select * from  {{ ref('snowplow_sessions__mapped') }}

@@ -24,8 +24,7 @@ sessions_joined as (
         shopify_customers.customer_created_at,
         shopify_customers.customer_age_days,
         shopify_customers.customer_type,
-        shopify_customers.lifetime_revenue,
-        shopify_customers.lifetime_completed_orders
+        shopify_customers.lifetime_revenue
 
 --start to categorize source, medium, and campaign from snowplow fields
 
@@ -87,6 +86,7 @@ all_sessions as (
     
         sessions.*,
         attribution_calculations.customer_id,
+        attribution_calculations.lifetime_revenue,
         attribution_calculations.forty_twenty_forty_attribution_points,
         attribution_calculations.first_click_attribution_points,
         attribution_calculations.last_click_attribution_points,
