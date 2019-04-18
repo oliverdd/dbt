@@ -5,7 +5,7 @@
 }}
 
 with sessions as (
-    select * from  {{ ref('snowplow_sessions__mapped') }}
+    select * from  {{ ref('snowplow_sessions__with_channels') }}
 ),
 
 shopify_customers as (
