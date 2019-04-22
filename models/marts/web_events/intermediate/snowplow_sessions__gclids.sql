@@ -26,7 +26,11 @@ filter_gclids as (
 gclids_joined as (
 
     select
-    
+        
+        {{ dbt_utils.surrogate_key(
+            'user_snowplow_domain_id', 
+            'session_index'
+        ) }} as unique_id,
         filter_gclids.user_snowplow_domain_id,
         filter_gclids.session_index,
         ads.criteria_id,

@@ -1,3 +1,10 @@
+{{
+    config(
+        materialized='table'
+    )
+}}
+
+
 with clicks as (
 
     select * from {{ref('adwords_click_performance')}}

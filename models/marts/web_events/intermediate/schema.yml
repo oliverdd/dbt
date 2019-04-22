@@ -3,6 +3,13 @@ version: 2
 version: 2
 
 models:
+    
+    - name: snowplow_sessions__gclids
+      columns:
+          - name: unique_id
+            tests:
+                - not_null
+                - unique
     - name: snowplow_sessions__mapped
       columns:
           - name: session_id
