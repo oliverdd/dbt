@@ -10,6 +10,7 @@ models:
             tests:
                 - not_null
                 - unique
+
     - name: snowplow_sessions__mapped
       columns:
           - name: session_id
