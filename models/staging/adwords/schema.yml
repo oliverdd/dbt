@@ -1,9 +1,0 @@
-version: 2
-
-models:
-    - name: adwords_gclid_mapping
-      columns:
-          - name: gclid
-            tests:
-                - unique
-                - not_null
