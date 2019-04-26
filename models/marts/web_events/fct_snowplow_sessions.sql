@@ -20,7 +20,7 @@ sessions_joined as (
     
         sessions.*,
         date_trunc('day', cast(session_start as date)) as session_day,
-        shopify_customers.customer_id,
+        shopify_customers.email,
         shopify_customers.first_order_date
 
     from sessions
@@ -36,10 +36,10 @@ apply_rank as (
 
         *,
 
-        row_number() over (partition by customer_id order by session_start)
+        row_number() over (partition by email order by session_start)
             as attribution_session_number,
 
-        count(*) over (partition by customer_id) as attribution_total_sessions
+        count(*) over (partition by email) as attribution_total_sessions
 
     from sessions_joined
 
@@ -80,7 +80,7 @@ all_sessions as (
     select 
     
         sessions.*,
-        attribution_calculations.customer_id,
+        attribution_calculations.email,
         attribution_calculations.forty_twenty_forty_attribution_points,
         attribution_calculations.first_click_attribution_points,
         attribution_calculations.last_click_attribution_points,
