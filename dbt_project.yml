@@ -71,14 +71,13 @@ models:
                 enabled: false
 
     adwords:
-        stitch:
-            base:
-                adwords_url_performance:
-                    enabled: true
-            adapters:
-                adwords_ad_performance_adapter:
-                    enabled: false
+        router:
+            adapter:
+                criteria:
+                    adwords_ad_performance_adapter:
+                        enabled: false
         vars:
+            etl: "stitch"
             criteria_performance_report: "raw.perfect_keto_adwords.criteria_performance_report"
             click_performance_report: "raw.perfect_keto_adwords.click_performance_report"
             final_url_performance_report: "raw.perfect_keto_adwords.final_url_report"

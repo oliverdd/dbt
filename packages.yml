@@ -6,7 +6,7 @@ packages:
     version: 0.7.2
 
   - package: fishtown-analytics/adwords
-    version: 0.2.6
+    version: 0.2.9
 
   - package: fishtown-analytics/facebook_ads
-    version: 0.4.3
+    version: 0.4.6

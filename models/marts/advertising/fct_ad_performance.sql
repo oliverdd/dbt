@@ -37,6 +37,28 @@ id_creation as (
 
     from unioned
 
+),
+
+marketing_channels as (
+    
+    select
+    
+        *,
+        case
+
+            when lower(adwords_campaign_name) ilike '%display%' then 'display'
+            when lower(adwords_campaign_name) ilike '%shopping%'
+                or lower(adwords_campaign_name) ilike '%cpc%' then 'paid search' 
+            when utm_medium is null then 'direct'
+            when lower(utm_medium) in ('retargeting', 'social', 'influencers') then utm_medium
+            when lower(utm_medium) in ('paid', 'paid_social') then 'facebook ads'
+            when lower(utm_medium) in ('paidsearch', 'cpc', 'shopping') 
+                then 'paid search'
+            else null
+        end as channel
+        
+    from id_creation
+    
 )
 
-select * from id_creation
+select * from marketing_channels
