@@ -13,6 +13,7 @@ joined as (
         criteria_id,
         ad_group_name,
         campaign_id,
+        'google' as utm_source,
         lower(campaign_name) as adwords_campaign_name,
         clicks,
         spend,
