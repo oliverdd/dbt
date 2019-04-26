@@ -21,6 +21,7 @@ flattened_items as (
         f.value:name::varchar as product_name,
         f.value:quantity as quantity,
         f.value:pre_tax_price::number(38,6) as pre_tax_price,
+        f.value:discount_allocations[0]:amount::number(38,6) as discount_allocations,
         f.value:total_discount::number(38,6) as total_discount,
         f.value:price::number(38,6) as price,
         f.value:fulfillment_quantity as fulfillment_quantity,
