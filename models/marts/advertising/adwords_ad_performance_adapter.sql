@@ -1,27 +1,30 @@
 with criteria_performance as (
-    
+
     select * from {{ ref('adwords_criteria_performance') }}
-    
+
 ),
 
-joined as (
+final as (
 
     select
-
+    
         date_day as campaign_date,
-        ad_group_id,
         criteria_id,
         ad_group_name,
-        campaign_id,
+        ad_group_id,
+        ad_group_state,
         'google' as utm_source,
+        'cpc' as utm_medium,
         lower(campaign_name) as adwords_campaign_name,
+        campaign_id,
+        campaign_state,
+        customer_id,
         clicks,
-        spend,
         impressions,
+        spend,
         'google' as platform
 
     from criteria_performance
-    
 )
 
-select * from joined
+select * from final

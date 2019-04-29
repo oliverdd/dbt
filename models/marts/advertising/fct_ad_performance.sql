@@ -21,7 +21,8 @@ id_creation as (
                 {{dbt_utils.surrogate_key (
                     'campaign_date',
                     'ad_name',
-                    'adset_name',
+                    'ad_group_id',
+                    'ad_group_name',
                     'fb_campaign_name'
                 )}}
             when platform = 'google' then
