@@ -13,8 +13,6 @@ fb_keyword_performance_agg as (
         adset_name as ad_group_name,
         ad_name,
         campaign_id,
-        url_host,
-        url_path,
         utm_source,
         utm_medium,
         utm_campaign,
@@ -28,7 +26,7 @@ fb_keyword_performance_agg as (
         
 
     from fb_keyword_performance
-    {{dbt_utils.group_by(14)}}
+    {{dbt_utils.group_by(12)}}
 
 )
 

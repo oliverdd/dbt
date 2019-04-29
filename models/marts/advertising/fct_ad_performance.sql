@@ -23,6 +23,8 @@ id_creation as (
                     'ad_name',
                     'ad_group_id',
                     'ad_group_name',
+                    'utm_source',
+                    'utm_medium',
                     'fb_campaign_name'
                 )}}
             when platform = 'google' then
