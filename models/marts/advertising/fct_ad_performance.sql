@@ -38,4 +38,5 @@ id_creation as (
     from unioned
 
 )
+
 select * from id_creation

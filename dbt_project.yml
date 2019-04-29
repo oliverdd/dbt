@@ -10,31 +10,33 @@ macro-paths: ["macros"]
 
 
 on-run-start:
-    - "{{resume_warehouse(var('resume_warehouse', false), var('warehouse_name'))}}"    
+    - "{{resume_warehouse(var('resume_warehouse', false), var('warehouse_name'))}}"
 
 on-run-end: 
     - "{{suspend_warehouse(var('suspend_warehouse', false), var('warehouse_name'))}}"
     - "grant usage on schema {{target.schema}} to role REPORTER"
     - "grant usage on schema {{target.schema}} to role LOADER"
-    
+
 models:
     post-hook: "grant select on {{this}} to role REPORTER"
-    
+
     perfect_keto:
         vars:
-            warehouse_name: 'LOADING'   
-        
+            warehouse_name: 'LOADING'
+
     facebook_ads:
           vars:
-            ads_table: "raw.perfect_keto_facebook_ads.ads"
+            etl: "stitch"
+            ads_table: "{{ref('stg_facebook_ads')}}"
             ad_creatives_table: "raw.perfect_keto_facebook_ads.adcreative"
             adsets_table: "raw.perfect_keto_facebook_ads.adsets"
             campaigns_table: "raw.perfect_keto_facebook_ads.campaigns"
-            ads_insights_table: "raw.perfect_keto_facebook_ads.ads_insights"  
+            ads_insights_table: "raw.perfect_keto_facebook_ads.ads_insights"
+            url_tag_table: "disabled"
           transform:
             fb_ad_performance_adapter:
                 enabled: false
-                
+
     fishtown_analytics_ecommerce:
         transform:
             addresses:
@@ -61,15 +63,15 @@ models:
         base:
             optional:
                 enabled: false
-                page_views:
-                    optional:
-                        enabled: false
+        page_views:
+            optional:
+                enabled: false
         identification:
             snowplow_id_map:
                 enabled: false
 
     adwords:
-        stitch:                
+        stitch:
             base:
                 adwords_url_performance:
                     enabled: true
@@ -85,10 +87,8 @@ models:
             accounts_table: "raw.perfect_keto_adwords.accounts"
             campaigns_table: "raw.perfect_keto_adwords.campaigns"
             adapter_value: criteria
-                       
 
-        
-target-path: "target"  
+target-path: "target"
 clean-targets:
     - "target"
     - "dbt_modules"
