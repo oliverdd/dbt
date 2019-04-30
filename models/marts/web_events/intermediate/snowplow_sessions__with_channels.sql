@@ -34,7 +34,7 @@ with_channels as (
             when referer_medium is not null then lower(referer_medium)
             when referer_medium = 'unknown' then 'referral'
             else 'direct'
-        end as attribution_channel,
+        end as channel,
 
         case
             when first_page_url_query like '%gclid%' then 'google'
@@ -45,7 +45,7 @@ with_channels as (
                 or marketing_campaign is not null
                 then lower(marketing_source)
             when referer_source is not null then lower(referer_source)
-        end as attribution_source,
+        end as platform,
 
         case
             when adwords_campaign is not null
@@ -55,7 +55,7 @@ with_channels as (
                 or marketing_campaign is not null
                 then lower(marketing_campaign)
             when referer_url_host is not null then lower(referer_url_host)
-        end as attribution_campaign
+        end as campaign
         
     from sessions
     
