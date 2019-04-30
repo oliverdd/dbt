@@ -15,7 +15,7 @@ final as (
         ad_group_state,
         'google' as utm_source,
         'cpc' as utm_medium,
-        lower(campaign_name) as adwords_campaign_name,
+        lower(campaign_name) as campaign,
         campaign_id,
         campaign_state,
         customer_id,

@@ -25,14 +25,14 @@ id_creation as (
                     'ad_group_name',
                     'utm_source',
                     'utm_medium',
-                    'fb_campaign_name'
+                    'campaign'
                 )}}
             when platform = 'google' then
                 {{dbt_utils.surrogate_key (
                     'campaign_date',
                     'criteria_id',
                     'ad_group_id',
-                    'adwords_campaign_name'
+                    'campaign'
                 )}}
             else null
         end as id,
@@ -49,9 +49,9 @@ marketing_channels as (
         *,
         case
 
-            when lower(adwords_campaign_name) ilike '%display%' then 'display'
-            when lower(adwords_campaign_name) ilike '%shopping%'
-                or lower(adwords_campaign_name) ilike '%cpc%' then 'paid search' 
+            when lower(campaign) ilike '%display%' then 'display'
+            when lower(campaign) ilike '%shopping%'
+                or lower(campaign) ilike '%cpc%' then 'paid search' 
             when utm_medium is null then 'direct'
             when lower(utm_medium) in ('retargeting', 'social', 'influencers') then utm_medium
             when lower(utm_medium) in ('paid', 'paid_social') then 'facebook ads'
