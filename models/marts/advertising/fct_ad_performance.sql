@@ -58,7 +58,9 @@ marketing_channels as (
             when lower(utm_medium) in ('paidsearch', 'cpc', 'shopping') 
                 then 'paid search'
             else null
-        end as channel
+        end as channel,
+        
+        nullif(coalesce(fb_campaign_name, adwords_campaign_name),'') as campaign
         
     from id_creation
     
