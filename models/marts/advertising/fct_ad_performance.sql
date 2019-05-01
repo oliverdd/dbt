@@ -47,14 +47,19 @@ marketing_channels as (
     select
     
         *,
-        case
-
+        case 
             when lower(campaign) ilike '%display%' then 'display'
             when lower(campaign) ilike '%shopping%'
-                or lower(campaign) ilike '%cpc%' then 'paid search' 
-            when utm_medium is null then 'direct'
-            when lower(utm_medium) in ('retargeting', 'social', 'influencers') then utm_medium
-            when lower(utm_medium) in ('paid', 'paid_social') then 'facebook ads'
+                or lower(campaign) ilike '%cpc%' then 'paid search'
+            when utm_medium is null and utm_medium not in ('fb_retargeted', 'ig_retargeted') 
+                then 'direct'
+            when lower(utm_medium) in ('retargeting', 'social', 'influencers') 
+                then utm_medium
+            when lower(utm_campaign) in ('fb_retargeted', 'ig_retargeted') 
+                then 'retargeting'
+            when lower(utm_medium) in ('paid', 'paid_social') 
+                and lower(utm_campaign) not ilike '%amazon%' then 'facebook ads'
+            when lower(utm_campaign) ilike '%amazon%' then 'facebook amazon'
             when lower(utm_medium) in ('paidsearch', 'cpc', 'shopping') 
                 then 'paid search'
             else null
