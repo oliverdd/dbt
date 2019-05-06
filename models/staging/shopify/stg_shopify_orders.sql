@@ -14,7 +14,7 @@ renamed as (
         source_name as source_name_id,
         name as order_name,
         user_id,
-        customer:id as customer_id,
+        customer:id::varchar(256) as customer_id,
         customer:last_order_id as last_order_id,
         customer:last_order_name::varchar as last_order_name,
         cart_token,
