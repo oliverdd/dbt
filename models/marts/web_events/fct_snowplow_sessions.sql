@@ -13,6 +13,7 @@ with sessions as (
 orders as (
     
     select * from {{ ref('fct_orders') }}
+    where is_completed = 1
     
 ),
 
@@ -23,6 +24,7 @@ sessions_joined as (
         sessions.*,
         date_trunc('day', cast(session_start as date)) as session_day,
         orders.email,
+        orders.customer_id,
         orders.first_order_date,
         orders.order_id,
         orders.completed_order_number,
@@ -30,7 +32,7 @@ sessions_joined as (
 
     from sessions
     inner join orders 
-        on sessions.inferred_user_id = orders.email
+        on sessions.inferred_user_id = orders.customer_id
         
     where sessions.session_start <= orders.created_at
         and (orders.previous_completed_order_date is null
@@ -89,6 +91,7 @@ all_sessions as (
     
         sessions.*,
         attribution_calculations.email,
+        attribution_calculations.customer_id,
         attribution_calculations.order_id,
         attribution_calculations.completed_order_number,
         attribution_calculations.order_date,
