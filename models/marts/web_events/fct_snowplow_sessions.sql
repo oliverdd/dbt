@@ -5,12 +5,14 @@
 }}
 
 with sessions as (
+    
     select * from  {{ ref('snowplow_sessions__with_channels') }}
+
 ),
 
-shopify_customers as (
+orders as (
     
-    select * from {{ ref('customers') }}
+    select * from {{ ref('fct_orders') }}
     
 ),
 
@@ -20,13 +22,19 @@ sessions_joined as (
     
         sessions.*,
         date_trunc('day', cast(session_start as date)) as session_day,
-        shopify_customers.email,
-        shopify_customers.first_order_date
+        orders.email,
+        orders.first_order_date,
+        orders.order_id,
+        orders.completed_order_number,
+        orders.created_at as order_date
 
     from sessions
-    left join shopify_customers 
-        on sessions.inferred_user_id = shopify_customers.email
-        and sessions.session_start <= shopify_customers.first_order_date
+    inner join orders 
+        on sessions.inferred_user_id = orders.email
+        
+    where sessions.session_start <= orders.created_at
+        and (orders.previous_completed_order_date is null
+        or sessions.session_start > orders.previous_completed_order_date)    
         
 ),
 
@@ -36,10 +44,10 @@ apply_rank as (
 
         *,
 
-        row_number() over (partition by email order by session_start)
+        row_number() over (partition by order_id order by session_start)
             as attribution_session_number,
 
-        count(*) over (partition by email) as attribution_total_sessions
+        count(*) over (partition by order_id) as attribution_total_sessions
 
     from sessions_joined
 
@@ -81,6 +89,9 @@ all_sessions as (
     
         sessions.*,
         attribution_calculations.email,
+        attribution_calculations.order_id,
+        attribution_calculations.completed_order_number,
+        attribution_calculations.order_date,
         attribution_calculations.forty_twenty_forty_attribution_points,
         attribution_calculations.first_click_attribution_points,
         attribution_calculations.last_click_attribution_points,
