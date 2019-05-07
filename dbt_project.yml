@@ -66,9 +66,6 @@ models:
         page_views:
             optional:
                 enabled: false
-        identification:
-            snowplow_id_map:
-                enabled: false
 
     adwords:
         router:

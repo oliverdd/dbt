@@ -9,7 +9,7 @@ renamed as (
     select
     
         -- ids
-        id as customer_id,
+        id::varchar(256) as customer_id,
         last_order_id,
         last_order_name as last_order_name_id,
         
