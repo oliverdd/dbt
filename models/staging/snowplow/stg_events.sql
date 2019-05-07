@@ -10,7 +10,7 @@ add_users as (
         {{ dbt_utils.star(from=ref('events_base'), except=["USER_ID", "APP_ID"]) }},
         
         events.app_id,
-        coalesce(orders.email, events.user_id) as user_id
+        coalesce(orders.customer_id, events.user_id) as user_id
 
     from {{ref('events_base')}} as events
     left join orders
