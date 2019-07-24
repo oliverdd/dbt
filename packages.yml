@@ -1,12 +1,12 @@
 packages:
   - package: fishtown-analytics/fishtown_analytics_ecommerce
-    version: 0.1.9
+    version: 0.1.11
 
   - package: fishtown-analytics/snowplow
-    version: 0.7.2
+    version: 0.7.5
 
   - package: fishtown-analytics/adwords
     version: 0.2.9
 
   - package: fishtown-analytics/facebook_ads
-    version: 0.4.6
+    version: 0.4.7
