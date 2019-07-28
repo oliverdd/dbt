@@ -5,7 +5,8 @@ with source as (
         item.value:ASIN::string as asin,
         item.value:ItemPrice:Amount::float as price,
         item.value:ProductInfo:NumberOfItems::int as units_ordered,
-        orderstatus
+        orderstatus,
+        isbusinessorder
     from raw.perfect_keto_amazon_mws.orders,
     lateral flatten (input => orderitems) item
 )
