@@ -4,7 +4,8 @@ with source as (
         item.value:SellerSKU::string as sku,
         item.value:ASIN::string as asin,
         item.value:ItemPrice:Amount::float as price,
-        item.value:ProductInfo:NumberOfItems::int as units_ordered,
+        item.value:ProductInfo:NumberOfItems::int as numberofitems,
+        item.value:QuantityOrdered::int as quantityordered,
         orderstatus,
         isbusinessorder
     from raw.perfect_keto_amazon_mws.orders,
