@@ -10,7 +10,7 @@ with orders as (
         sum(amazon_fba_fee) as amazon_fba_fee,
         sum(contribution_margin) as contribution_margin,
         sum(attributedunitsordered7d) as attributedUnitsOrdered7d
-    from analytics.dbt_faisal.stg_amazon_sponsored_products
+    from analytics.stg_amazon_sponsored_products
     group by 1,2,3
     order by 1 desc
 ),

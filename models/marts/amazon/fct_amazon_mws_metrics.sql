@@ -10,7 +10,7 @@ with mws_orders as (
         sum(amazon_referral) as amazon_referral,
         sum(amazon_fba_fee) as amazon_fba_fee,
         sum(contribution_margin) as contribution_margin
-    from analytics.dbt_faisal.stg_amazon_mws
+    from {{ ref('stg_amazon_mws') }}
     where orderstatus != 'Canceled'
     group by 1,2,3
 ),
