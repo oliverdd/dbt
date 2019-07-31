@@ -2,26 +2,26 @@ with skus as (
     select
         coalesce(m.sku,s.sku) as sku,
         coalesce(m.asin,s.asin) as asin
-    from {{ ref('stg_amazon_mws') }} m
-    full outer join {{ ref('stg_amazon_sponsored_products') }} s on m.sku = s.sku
+    from analytics.dbt_faisal.stg_amazon_mws m
+    full outer join analytics.dbt_faisal.stg_amazon_sponsored_products s on m.sku = s.sku
 ),
 
 amazon_main_metrics as (
-    select 
+        select 
         distinct s.sku,
         s.asin,
         round(zeroifnull(m.price),2) as "Price",
         sp."AcOS %" as "AcOS %",
-        sp."RoAS %" as "RoAS %",
-        sp."CM %" as "CM %",
-        round(zeroifnull(m."Y Sales"+sp."Y Sales"),2) as "Y Sales",
-        round(zeroifnull(m."Y3 Sales"+sp."Y3 Sales"),2) as "Y3 Sales",
-        round(zeroifnull(m."Y7 Sales"+sp."Y7 Sales"),2) as "Y7 Sales",
-        round(zeroifnull(m."Y30 Sales"+sp."Y30 Sales"),2) as "Y30 Sales"
+        sp."RoAS $" as "RoAS $",
+        round((sp."CM Total"+m."CM Total")/(sp."Y Sales"+m."Y Sales")*100.0,2) as "CM %",
+        round(zeroifnull(m."Y Units"+sp."Y Units"),2) as "Y Units",
+        round(zeroifnull(m."Y3 Units"+sp."Y3 Units"),2) as "Y3 Units",
+        round(zeroifnull(m."Y7 Units"+sp."Y7 Units"),2) as "Y7 Units",
+        round(zeroifnull(m."Y30 Units"+sp."Y30 Units"),2) as "Y30 Units"
     from skus s
-    full join {{ ref('fct_amazon_mws_metrics') }} m on s.sku = m.sku
-    full join {{ ref('fct_amazon_sp_metrics') }} sp on s.sku = sp.sku
-    order by round(zeroifnull(m."Y30 Sales"+sp."Y30 Sales"),2) desc nulls last
+    full join analytics.dbt_faisal.fct_amazon_mws_metrics m on s.sku = m.sku
+    full join analytics.dbt_faisal.fct_amazon_sp_metrics sp on s.sku = sp.sku
+    order by round(zeroifnull(m."Y30 Units"+sp."Y30 Units"),2) desc nulls last
 )
 
 select * from amazon_main_metrics
