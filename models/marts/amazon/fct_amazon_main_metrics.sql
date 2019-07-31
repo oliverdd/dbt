@@ -2,8 +2,8 @@ with skus as (
     select
         coalesce(m.sku,s.sku) as sku,
         coalesce(m.asin,s.asin) as asin
-    from analytics.dbt_faisal.stg_amazon_mws m
-    full outer join analytics.dbt_faisal.stg_amazon_sponsored_products s on m.sku = s.sku
+    from {{ ref('stg_amazon_mws') }} m
+    full outer join {{ ref('stg_amazon_sponsored_products') }} s on m.sku = s.sku
 ),
 
 amazon_main_metrics as (
@@ -19,8 +19,8 @@ amazon_main_metrics as (
         round(zeroifnull(m."Y7 Units"+sp."Y7 Units"),2) as "Y7 Units",
         round(zeroifnull(m."Y30 Units"+sp."Y30 Units"),2) as "Y30 Units"
     from skus s
-    full join analytics.dbt_faisal.fct_amazon_mws_metrics m on s.sku = m.sku
-    full join analytics.dbt_faisal.fct_amazon_sp_metrics sp on s.sku = sp.sku
+    full join {{ ref('fct_amazon_mws_metrics') }} m on s.sku = m.sku
+    full join {{ ref('fct_amazon_sp_metrics') }} sp on s.sku = sp.sku
     order by round(zeroifnull(m."Y30 Units"+sp."Y30 Units"),2) desc nulls last
 )
 
