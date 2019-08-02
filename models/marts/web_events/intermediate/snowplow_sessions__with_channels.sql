@@ -7,7 +7,7 @@
 
 with sessions as (
     
-    select * from analytics.snowplow_sessions__mapped
+    select * from {{ ref('snowplow_sessions__mapped') }}
     
 ),
 
