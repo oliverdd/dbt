@@ -13,11 +13,10 @@ with source as (
         item.value:ProductInfo:NumberOfItems::int as numberofitems,
         item.value:QuantityOrdered::int as quantityordered,
         item.value:ItemPrice:Amount::float * item.value:QuantityOrdered::int as sales,
-        ordertotal:Amount,
-        ordertotal,
+        ordertotal:Amount::float as order_total,
         orderstatus,
         isbusinessorder,
-        item.value:isGift::string as isgift
+        item.value:IsGift::string as isgift
     from raw.perfect_keto_amazon_mws.orders,
     lateral flatten (input => orderitems) item
 ),
