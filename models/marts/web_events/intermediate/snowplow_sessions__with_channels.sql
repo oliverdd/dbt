@@ -11,23 +11,6 @@ with sessions as (
     
 ),
 
-criteria as (
-
-    select 
-        campaign_id::string as campaign_id,
-        campaign_name::string as campaign_name
-    from analytics.adwords_criteria_performance
-    
-),
-
-joined as (
-    select *,
-        case when adwords_campaign is null and marketing_campaign = campaign_id then campaign_name end as adwords_campaign2
-    from sessions s 
-    left join criteria c on s.marketing_campaign = c.campaign_id 
-
-),
-
 with_channels as (
     
     select 
@@ -58,15 +41,15 @@ with_channels as (
 
         case 
             when (marketing_medium = 'shopping' or adwords_campaign ilike '%shopping%' or marketing_campaign ilike '%shopping%'
-                or adwords_campaign2 ilike '%shopping%' or adwords_campaign ilike '%pla%' or adwords_campaign2 ilike '%pla%' 
+                or adwords_campaign ilike '%pla%'
                 or marketing_campaign ilike '%pla%') and first_page_url_query like '%gclid%' then 'google-shopping'
-            when (adwords_campaign ilike '%nonbranded%' or adwords_campaign2 ilike '%nonbranded%' 
+            when (adwords_campaign ilike '%nonbranded%' 
                 or marketing_campaign ilike '%nonbranded%') and first_page_url_query like '%gclid%' then 'google-non-branded'
-            when (adwords_campaign ilike '%branded%' or adwords_campaign2 ilike '%branded%' 
+            when (adwords_campaign ilike '%branded%' 
                 or marketing_campaign ilike '%branded%') and first_page_url_query like '%gclid%' then 'google-branded'
-            when (adwords_campaign ilike '%discover%' or adwords_campaign2 ilike '%discover%' 
+            when (adwords_campaign ilike '%discover%' 
                 or marketing_campaign ilike '%discover%') and first_page_url_query like '%gclid%' then 'google-discovery'
-            when (marketing_medium = 'video' or adwords_campaign ilike '%video%' or adwords_campaign2 ilike '%video%' 
+            when (marketing_medium = 'video' or adwords_campaign ilike '%video%' 
                 or marketing_campaign ilike '%video%') and first_page_url_query like '%gclid%' then 'youtube'
             when first_page_url_query like '%gclid%' then 'google'
             
@@ -92,8 +75,6 @@ with_channels as (
         case
             when adwords_campaign is not null
                 then lower(adwords_campaign)
-            when adwords_campaign is null and marketing_campaign = campaign_id
-                then adwords_campaign2
             when marketing_medium is not null
                 or marketing_source is not null
                 or marketing_campaign is not null
@@ -101,7 +82,7 @@ with_channels as (
             when referer_url_host is not null then lower(referer_url_host)
         end as campaign
         
-    from joined
+    from sessions
 
 )
 
