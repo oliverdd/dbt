@@ -1,14 +1,23 @@
 with source as (
     select
+        amazonorderid,
+        buyeremail,  
+        buyername,
         convert_timezone('America/Los_Angeles', purchasedate)::date as day,
         item.value:SellerSKU::string as sku,
         item.value:ASIN::string as asin,
         item.value:ItemPrice:Amount::float as price,
+        item.value:ItemTax:Amount::float as item_tax,
+        item.value:PromotionDiscount:Amount::float as discount,
+        item.value:PromotionDiscountTax:Amount::float as discount_tax,
         item.value:ProductInfo:NumberOfItems::int as numberofitems,
         item.value:QuantityOrdered::int as quantityordered,
         item.value:ItemPrice:Amount::float * item.value:QuantityOrdered::int as sales,
+        ordertotal:Amount,
+        ordertotal,
         orderstatus,
-        isbusinessorder
+        isbusinessorder,
+        item.value:isGift::string as isgift
     from raw.perfect_keto_amazon_mws.orders,
     lateral flatten (input => orderitems) item
 ),
