@@ -7,7 +7,7 @@
 
 with sessions as (
     
-    select * from  {{ ref('snowplow_sessions__mapped') }}
+    select * from {{ ref('snowplow_sessions__mapped') }}
     
 ),
 
@@ -17,6 +17,8 @@ with_channels as (
         
         *,
         case
+            when lower(marketing_medium) = 'affiliate' then 'affiliate'
+            when lower(marketing_medium) = 'influencers' then 'influencers'
             when first_page_url_query like '%gclid%' 
                 or lower(marketing_medium) in ('paidsearch', 'cpc', 'shopping')
                 then 'paid search'
@@ -24,9 +26,10 @@ with_channels as (
                 and lower(marketing_source) != 'facebook' then 'search'
             when marketing_medium in ('ads', 'paid_social') 
                 and lower(marketing_source) = 'pinterest' then 'pinterest ads'
-            when marketing_medium in ('paid', 'paid_social')
-                and lower(marketing_source) = 'facebook' then 'facebook ads'
+            when (marketing_medium in ('paid', 'paid_social') and lower(marketing_source) = 'facebook') 
+                or (lower(marketing_source) = 'geistm' and marketing_campaign ilike 'fb%') then 'facebook ads'
             when lower(marketing_medium) = 'social' then 'social'
+            when lower(marketing_source) = 'criteo' then 'criteo'
             when marketing_medium is not null
                 or marketing_source is not null
                 or marketing_campaign is not null
@@ -36,10 +39,32 @@ with_channels as (
             else 'direct'
         end as channel,
 
-        case
+        case 
+            when (marketing_medium = 'shopping' or adwords_campaign ilike '%shopping%' or marketing_campaign ilike '%shopping%'
+                or adwords_campaign ilike '%pla%'
+                or marketing_campaign ilike '%pla%') and first_page_url_query like '%gclid%' then 'google-shopping'
+            when (adwords_campaign ilike '%nonbranded%' 
+                or marketing_campaign ilike '%nonbranded%') and first_page_url_query like '%gclid%' then 'google-non-branded'
+            when (adwords_campaign ilike '%branded%' 
+                or marketing_campaign ilike '%branded%') and first_page_url_query like '%gclid%' then 'google-branded'
+            when (adwords_campaign ilike '%discover%' 
+                or marketing_campaign ilike '%discover%') and first_page_url_query like '%gclid%' then 'google-discovery'
+            when (marketing_medium = 'video' or adwords_campaign ilike '%video%' 
+                or marketing_campaign ilike '%video%') and first_page_url_query like '%gclid%' then 'youtube'
             when first_page_url_query like '%gclid%' then 'google'
-            when referer_url_host = 'com.google.android.googlequicksearchbox'
-                then 'Android'
+            
+            when (marketing_medium = 'shopping' or marketing_campaign ilike '%shopping%' or marketing_campaign ilike '%pla%') 
+                and marketing_source = 'bing' then 'bing-shopping'
+            when marketing_campaign ilike '%nonbranded%' and marketing_source = 'bing' then 'bing-non-branded'
+            when (marketing_campaign ilike '%branded%' or marketing_campaign ilike '%brand%') 
+                and marketing_source = 'bing' then 'bing-branded'
+            
+            when marketing_medium in ('ads', 'paid_social') 
+                and lower(marketing_source) = 'pinterest' then 'pinterest ads'
+            
+            when (marketing_medium in ('paid', 'paid_social') and lower(marketing_source) = 'facebook') 
+                or (lower(marketing_source) = 'geistm' and marketing_campaign ilike 'fb%') then 'facebook ads'
+            
             when marketing_medium is not null
                 or marketing_source is not null
                 or marketing_campaign is not null
@@ -58,7 +83,7 @@ with_channels as (
         end as campaign
         
     from sessions
-    
+
 )
 
 select * from with_channels
