@@ -1,6 +1,6 @@
 with source as (
     select
-    	day::date as day,
+    	  day::date as day,
         sku,
         asin,
         cost as advertising_cost,
