@@ -61,8 +61,8 @@ final as (
         o.month,
         o.sku,
         o.gross_item_revenue,
-        o.gross_item_revenue-o.discounts+r.returns as net_item_revenue,
-        o.total_units-r.units_returned as total_units
+        o.gross_item_revenue-o.discounts+zeroifnull(r.returns) as net_item_revenue,
+        o.total_units-zeroifnull(r.units_returned) as total_units
     from orders_calc o
     left join refund_calc r on o.month = r.month and o.sku = r.sku
 
