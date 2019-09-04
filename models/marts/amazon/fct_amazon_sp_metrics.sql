@@ -34,6 +34,7 @@ metrics as (
         sum(attributedunitsordered7d) over (partition by sku order by day rows between 6 preceding and current row) as units_y7,
         sum(attributedunitsordered7d) over (partition by sku order by day rows between 29 preceding and current row) as units_y30
     from orders
+    --filter out orders from prime day
     where day <> '2019-07-15' and day <> '2019-07-16'
     order by 2 asc, 1 asc
 ),
