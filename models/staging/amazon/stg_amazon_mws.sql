@@ -1,4 +1,5 @@
 with source as (
+
     select
         amazonorderid as id,
         buyeremail,  
@@ -9,6 +10,7 @@ with source as (
         orderstatus,
         isbusinessorder
     from raw.perfect_keto_amazon_mws.orders
+    
 )
 
 select * from source
