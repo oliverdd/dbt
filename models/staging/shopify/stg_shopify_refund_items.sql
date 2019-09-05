@@ -10,7 +10,7 @@ flattened as (
         refunds,
         f.value:id as refund_id,
         id as order_id,
-        f1.value:id as order_item_id,
+        f1.value:line_item:id as order_item_id,
         f1.value:line_item:title::string as product_title,
         f1.value:line_item:variant_title::string as variant_title,
         f1.value:line_item:sku::string as sku,
