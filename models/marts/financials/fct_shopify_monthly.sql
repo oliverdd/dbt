@@ -89,6 +89,32 @@ refund_joined as (
 
 ),
 
+refund_channel1 as (
+
+    select 
+        r.*,
+        o.app_id 
+    from refund_joined r 
+    left join orders o on o.order_id = r.order_id  
+    
+),
+
+refund_channel2 as (
+
+    select
+        date_trunc(month,date) as month,
+        app_id,
+        sum(gross_returns) as gross_returns,
+        sum(discount_amount) as discount_returned,
+        sum(gross_returns)+sum(discount_amount) as net_returns,
+        sum(tax_amount) as tax_returned,
+        sum(shipping_amount) as shipping_returned,
+        sum(gross_returns)+sum(discount_amount)+sum(tax_amount)+sum(shipping_amount) as total_returns
+    from refund_channel1
+    group by 1,2
+
+),
+
 refund_final as (
 
     select
@@ -99,7 +125,7 @@ refund_final as (
         sum(tax_amount) as tax_returned,
         sum(shipping_amount) as shipping_returned,
         sum(gross_returns)+sum(discount_amount)+sum(tax_amount)+sum(shipping_amount) as total_returns
-    from refund_joined 
+    from refund_joined
     group by 1
     
 ),
@@ -129,35 +155,59 @@ quantity as (
     select 
         date_trunc(month,o.created_at) as month,
         sum(quantity) as total_units
-    from {{ ref('stg_shopify_orders') }} o 
-    join {{ ref('stg_shopify_order_items') }} oi on o.order_id = oi.order_id
+    from analytics.stg_shopify_orders o 
+    join analytics.stg_shopify_order_items oi on o.order_id = oi.order_id
     group by 1
 
 ),
 
 channels as (
+
     select 
         date_trunc(month,created_at) as order_month,
-        case when tags ilike '%wholesale%' then 'Wholesale'
-        when tags ilike '%subscription%' then 'Recharge'
-            else 'Online Store' end as channel,
+        app_id,
         sum(total_line_items_price) as order_gross,
         sum(total_discounts) as total_discounts,
         sum(total_shipping_cost) as order_shipping_gross,
-        sum(total_line_items_price) - sum(total_discounts) + sum(total_shipping_cost) as total_net
+        sum(total_tax) as order_tax_gross
     from orders 
     group by 1,2
     order by 1 desc, 6 desc
+    
 ),
 
 channels2 as (
+
+    select 
+        c.order_month,
+        case when c.app_id = 580111 then 'Online Store'
+            when c.app_id = 1150484 then 'Wholesale'
+            when c.app_id = 294517 then 'Recharge'
+            else 'Other' end as channel,
+        c.app_id,
+        order_gross,
+        total_discounts,
+        zeroifnull(gross_returns) as gross_returns,
+        order_shipping_gross,
+        zeroifnull(shipping_returned) as shipping_returned,
+        order_tax_gross,
+        zeroifnull(tax_returned) as tax_returned,
+        order_gross-total_discounts+zeroifnull(gross_returns)+order_shipping_gross+shipping_returned as total_net
+    from channels c 
+    left join refund_channel2 r on c.order_month = r.month and c.app_id = r.app_id
+
+),
+
+channels3 as (
+
     select 
         order_month,
         case when channel = 'Online Store' then total_net end as "Online Store Rev",
         case when channel = 'Recharge' then total_net end as "Recharge Rev",
         case when channel = 'Wholesale' then total_net end as "Wholesale Rev"
-    from channels
+    from channels2
     order by 1 desc
+    
 ),
 
 final as (
@@ -189,6 +239,6 @@ select
     sum(ch."Recharge Rev") as "Recharge Rev",
     sum(ch."Wholesale Rev") as "Wholesale Rev"
 from final f
-left join channels2 ch on f.month = ch.order_month
+left join channels3 ch on f.month = ch.order_month
 group by 1,2,3,4,5,6,7,8,9,10,11,12,13,14
 order by 1 asc
