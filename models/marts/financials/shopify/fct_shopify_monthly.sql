@@ -8,7 +8,12 @@ with gift_cards as (
 
 orders as (
 
-    select o.*    
+    select 
+        o.*,
+        case when app_id = 1150484 then 'Wholesale'
+            when app_id = 580111 then 'Online Store'
+            when app_id = 294517 then 'Recharge'
+            else 'Other' end as channel    
     from {{ ref('orders_xf') }} o
     where 
         not exists (
@@ -39,9 +44,8 @@ refund_calc as (
         order_item_id,
         product_title,
         order_item_price,
-        order_item_subtotal,
+        order_item_subtotal*-1 as gross_returns,
         quantity,
-        order_item_price*quantity*-1 as gross_returns,
         discount_amount,
         tax_amount as tax_amount
     from refund_items 
@@ -53,7 +57,7 @@ adjustments_calc as (
     select 
         refund_processed_at::date as date,
         order_id,
-        order_adjustments as gross_returns,
+        case when kind = 'shipping_refund' then 0 else order_adjustments end as gross_returns,
         case when kind = 'shipping_refund' then order_adjustments else 0 end as shipping_amount
     from order_adjustments
 
@@ -93,7 +97,7 @@ refund_channel1 as (
 
     select 
         r.*,
-        o.app_id 
+        o.channel
     from refund_joined r 
     left join orders o on o.order_id = r.order_id  
     
@@ -103,7 +107,7 @@ refund_channel2 as (
 
     select
         date_trunc(month,date) as month,
-        app_id,
+        channel,
         sum(gross_returns) as gross_returns,
         sum(discount_amount) as discount_returned,
         sum(gross_returns)+sum(discount_amount) as net_returns,
@@ -165,7 +169,7 @@ channels as (
 
     select 
         date_trunc(month,created_at) as order_month,
-        app_id,
+        channel,
         sum(total_line_items_price) as order_gross,
         sum(total_discounts) as total_discounts,
         sum(total_shipping_cost) as order_shipping_gross,
@@ -180,11 +184,7 @@ channels2 as (
 
     select 
         c.order_month,
-        case when c.app_id = 580111 then 'Online Store'
-            when c.app_id = 1150484 then 'Wholesale'
-            when c.app_id = 294517 then 'Recharge'
-            else 'Other' end as channel,
-        c.app_id,
+        c.channel,
         order_gross,
         total_discounts,
         zeroifnull(gross_returns) as gross_returns,
@@ -192,9 +192,9 @@ channels2 as (
         zeroifnull(shipping_returned) as shipping_returned,
         order_tax_gross,
         zeroifnull(tax_returned) as tax_returned,
-        order_gross-total_discounts+zeroifnull(gross_returns)+order_shipping_gross+shipping_returned as total_net
+        order_gross-total_discounts+zeroifnull(gross_returns)+order_shipping_gross+zeroifnull(shipping_returned) as total_net
     from channels c 
-    left join refund_channel2 r on c.order_month = r.month and c.app_id = r.app_id
+    left join refund_channel2 r on c.order_month = r.month and c.channel = r.channel
 
 ),
 
