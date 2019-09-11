@@ -1,24 +1,37 @@
-with order_items as (  
+with prices as (
 
-    select 
-        id,
-        created_at,
-        buyeremail,
-        buyername,
-        item_price,
-        item_tax,
-        discount,
-        discount_tax,
-        numberofitems,
-        quantityordered,
-        product_sales,
-        order_total,
-        orderstatus,
-        is_completed,
-        isbusinessorder,
-        isgift
+    select
+        sku,
+        round(avg(item_price),2) as item_price
     from {{ ref('stg_amazon_mws') }} m 
     left join {{ ref('stg_amazon_mws_order_items') }} i on m.id = i.order_id
+    where is_completed = 1
+    group by 1
+
+), order_items as (  
+
+    select 
+        m.id,
+        m.created_at,
+        m.buyeremail,
+        m.buyername,
+        i.sku,
+        coalesce(i.item_price, p.item_price) as item_price,
+        i.item_tax,
+        i.discount,
+        i.discount_tax,
+        i.numberofitems,
+        i.quantityordered,
+        case when orderstatus = 'Pending' then coalesce(i.item_price, p.item_price)*quantityordered 
+            else i.product_sales end as product_sales,
+        m.order_total,
+        m.orderstatus,
+        m.is_completed,
+        m.isbusinessorder,
+        i.isgift
+    from {{ ref('stg_amazon_mws') }} m 
+    left join {{ ref('stg_amazon_mws_order_items') }} i on m.id = i.order_id
+    left join prices p on i.sku = p.sku
 
 ), orders as (
 
