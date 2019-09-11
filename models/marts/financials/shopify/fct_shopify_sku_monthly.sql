@@ -22,7 +22,7 @@ refund_items as (
         order_item_price,
         order_item_subtotal,
         quantity,
-        order_item_price*quantity*-1 as gross_returns,
+        order_item_subtotal*-1 as gross_returns,
         discount_amount,
         tax_amount as tax_amount
     from {{ ref('stg_shopify_refund_items') }} 
