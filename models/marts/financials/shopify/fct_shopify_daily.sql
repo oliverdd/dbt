@@ -10,7 +10,7 @@ orders as (
 
     select 
         o.*,
-        case when app_id = 1150484 then 'Wholesale'
+        case when tags ilike '%wholesale%' then 'Wholesale' 
             when app_id = 580111 then 'Online Store'
             when app_id = 294517 then 'Recharge'
             else 'Other' end as channel    
